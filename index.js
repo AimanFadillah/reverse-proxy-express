@@ -4,18 +4,18 @@ const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middl
 const app = express();
 const port = 3000;
 
-const TARGET = 'https://zephyronline.com';
+const TARGET = 'https://www.stantonsofas.com';
 
 app.use(cors());
 
 function rewriteToProxy(text, proxyOrigin, proxyHost) {
   return text
-    .replaceAll('https://zephyronline.com', proxyOrigin)
-    .replaceAll('http://zephyronline.com', proxyOrigin)
-    .replaceAll('//zephyronline.com', `//${proxyHost}`)
-    .replaceAll('https:\\/\\/zephyronline.com', proxyOrigin.replaceAll('/', '\\/'))
-    .replaceAll('http:\\/\\/zephyronline.com', proxyOrigin.replaceAll('/', '\\/'))
-    .replaceAll('\\/\\/zephyronline.com', `\\/\\/${proxyHost}`);
+    .replaceAll('https://www.stantonsofas.com', proxyOrigin)
+    .replaceAll('http://www.stantonsofas.com', proxyOrigin)
+    .replaceAll('//www.stantonsofas.com', `//${proxyHost}`)
+    .replaceAll('https:\\/\\/www.stantonsofas.com', proxyOrigin.replaceAll('/', '\\/'))
+    .replaceAll('http:\\/\\/www.stantonsofas.com', proxyOrigin.replaceAll('/', '\\/'))
+    .replaceAll('\\/\\/www.stantonsofas.com', `\\/\\/${proxyHost}`);
 }
 
 function getProxyOrigin(req) {
@@ -26,9 +26,9 @@ function getProxyOrigin(req) {
 function rewriteCsp(cspValue, proxyOrigin, proxyHost) {
   if (!cspValue) return cspValue;
   return String(cspValue)
-    .replaceAll('https://zephyronline.com', proxyOrigin)
-    .replaceAll('http://zephyronline.com', proxyOrigin)
-    .replaceAll('zephyronline.com', proxyHost);
+    .replaceAll('https://www.stantonsofas.com', proxyOrigin)
+    .replaceAll('http://www.stantonsofas.com', proxyOrigin)
+    .replaceAll('www.stantonsofas.com', proxyHost);
 }
 
 // Streaming proxy — untuk file besar (gambar, video, font, dll)

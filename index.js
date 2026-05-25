@@ -18,6 +18,11 @@ function rewriteToProxy(text, proxyOrigin, proxyHost) {
     .replaceAll('\\/\\/zephyronline.com', `\\/\\/${proxyHost}`);
 }
 
+function getProxyOrigin(req) {
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  return `${proto}://${req.headers.host}`;
+}
+
 function rewriteCsp(cspValue, proxyOrigin, proxyHost) {
   if (!cspValue) return cspValue;
   return String(cspValue)
@@ -36,7 +41,7 @@ const proxyStreaming = createProxyMiddleware({
   on: {
     proxyRes(proxyRes, req, res) {
       const proxyHost = req.headers.host;
-      const proxyOrigin = `http://${proxyHost}`;
+      const proxyOrigin = getProxyOrigin(req);
       if (proxyRes.headers['content-security-policy']) {
         proxyRes.headers['content-security-policy'] = rewriteCsp(
           proxyRes.headers['content-security-policy'], proxyOrigin, proxyHost
@@ -65,7 +70,7 @@ const proxyTextRewrite = createProxyMiddleware({
     proxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
       const contentType = String(proxyRes.headers['content-type'] || '');
       const proxyHost = req.headers.host;
-      const proxyOrigin = `http://${proxyHost}`;
+      const proxyOrigin = getProxyOrigin(req);
 
       if (proxyRes.headers['content-security-policy']) {
         proxyRes.headers['content-security-policy'] = rewriteCsp(
